@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdminDash | Design de Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+      }
+
+      body {
+        background: #0f172a;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      /* Container principal */
+      .site-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #0b1120;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border: 1px solid #1e293b;
+      }
+
+      /* ASCII Art do design */
+      .ascii-art {
+        background: #020617;
+        color: #38bdf8;
+        font-family: "Courier New", monospace;
+        padding: 15px;
+        border-bottom: 2px solid #334155;
+        overflow-x: auto;
+        font-size: 11px;
+        line-height: 1.3;
+      }
+
+      .ascii-art pre {
+        margin: 0;
+      }
+
+      /* Container principal com menu lateral e conteúdo */
+      .dashboard-container {
+        display: flex;
+        min-height: 900px;
+      }
+
+      /* MENU LATERAL */
+      .sidebar {
+        width: 240px;
+        background: #0f172a;
+        border-right: 1px solid #1e293b;
+        padding: 30px 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-logo {
+        padding: 0 20px 30px;
+        font-size: 24px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border-bottom: 1px solid #1e293b;
+        margin-bottom: 20px;
+      }
+
+      .sidebar-menu {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 0 15px;
+      }
+
+      .menu-item {
+        padding: 12px 15px;
+        border-radius: 12px;
+        color: #94a3b8;
+        font-weight: 500;
+        transition: 0.3s;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .menu-item:hover {
+        background: #1e293b;
+        color: white;
+      }
+
+      .menu-item.active {
+        background: #2563eb;
+        color: white;
+      }
+
+      .menu-item i {
+        font-size: 20px;
+        width: 24px;
+      }
+
+      /* CONTEÚDO PRINCIPAL */
+      .main-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        background: #0b1120;
+      }
+
+      /* Cabeçalho do conteúdo */
+      .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .content-header h1 {
+        color: white;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .date-badge {
+        background: #1e293b;
+        color: #94a3b8;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 14px;
+        border: 1px solid #334155;
+      }
+
+      /* Cards de métricas e gráficos - LINHA 1 */
+      .metrics-row {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .chart-card {
+        flex: 2;
+        min-width: 300px;
+        background: #0f172a;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #1e293b;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        color: white;
+        margin-bottom: 20px;
+        font-weight: 500;
+      }
+
+      .chart-placeholder {
+        height: 200px;
+        background: linear-gradient(135deg, #1e293b 0%, #2d3a4f 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #38bdf8;
+        font-size: 48px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .chart-placeholder::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(56, 189, 248, 0.05) 10px,
+          rgba(56, 189, 248, 0.05) 20px
+        );
+      }
+
+      .kpi-card {
+        flex: 1;
+        min-width: 200px;
+        background: #0f172a;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #1e293b;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .kpi-item {
+        background: #1e293b;
+        border-radius: 12px;
+        padding: 15px;
+        color: white;
+      }
+
+      .kpi-label {
+        color: #94a3b8;
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .kpi-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #38bdf8;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+
+      .kpi-change {
+        font-size: 14px;
+        color: #4ade80;
+        background: rgba(74, 222, 128, 0.1);
+        padding: 3px 8px;
+        border-radius: 30px;
+      }
+
+      /* TABELA DE DADOS */
+      .table-section {
+        background: #0f172a;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #1e293b;
+        margin-bottom: 30px;
+      }
+
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        color: white;
+        margin-bottom: 20px;
+        font-weight: 500;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #e2e8f0;
+      }
+
+      th {
+        text-align: left;
+        padding: 15px 10px;
+        background: #1e293b;
+        color: #94a3b8;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      td {
+        padding: 12px 10px;
+        border-bottom: 1px solid #1e293b;
+      }
+
+      tr:hover td {
+        background: #1e293b;
+      }
+
+      .status-badge {
+        background: #2563eb;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 30px;
+        font-size: 12px;
+        display: inline-block;
+      }
+
+      .status-badge.warning {
+        background: #eab308;
+      }
+
+      .status-badge.success {
+        background: #22c55e;
+      }
+
+      /* LINHA 2: CALENDÁRIO E NOTIFICAÇÕES */
+      .bottom-row {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
+      }
+
+      .calendar-card {
+        flex: 1;
+        min-width: 280px;
+        background: #0f172a;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #1e293b;
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        color: white;
+        margin-bottom: 20px;
+      }
+
+      .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+      }
+
+      .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e2e8f0;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .calendar-day:hover {
+        background: #2563eb;
+        color: white;
+      }
+
+      .calendar-day.today {
+        background: #2563eb;
+        color: white;
+        font-weight: 600;
+      }
+
+      .calendar-day.other-month {
+        color: #334155;
+      }
+
+      .notifications-card {
+        flex: 1;
+        min-width: 280px;
+        background: #0f172a;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #1e293b;
+      }
+
+      .notifications-header {
+        display: flex;
+        justify-content: space-between;
+        color: white;
+        margin-bottom: 20px;
+      }
+
+      .notification-item {
+        display: flex;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #1e293b;
+      }
+
+      .notification-item:last-child {
+        border-bottom: none;
+      }
+
+      .notification-icon {
+        width: 40px;
+        height: 40px;
+        background: #1e293b;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #38bdf8;
+        font-size: 20px;
+      }
+
+      .notification-content {
+        flex: 1;
+      }
+
+      .notification-title {
+        color: white;
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
+
+      .notification-time {
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      /* Rodapé do dashboard */
+      .dashboard-footer {
+        border-top: 1px solid #1e293b;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        color: #64748b;
+        font-size: 13px;
+      }
+
+      .footer-links span {
+        margin-left: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .footer-links span:hover {
+        color: #38bdf8;
+      }
+
+      /* Responsividade */
+      @media (max-width: 1024px) {
+        .dashboard-container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          border-right: none;
+          border-bottom: 1px solid #1e293b;
+          padding: 15px;
+        }
+
+        .sidebar-menu {
+          flex-direction: row;
+          overflow-x: auto;
+          padding: 10px 0;
+        }
+
+        .menu-item {
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site-container">
+      <!-- ASCII Art do design Dashboard -->
+      <div class="ascii-art">
+        <pre>
++------------------+---------------------------------------------------+
+|                  |                                                   |
+|     MENU         |  +----------+  +----------+                       |
+|     LATERAL      |  | GRÁFICO  |  | MÉTRICAS |                       |
+|                  |  |          |  |  KPI     |                       |
+| - Home           |  +----------+  +----------+                       |
+| - Vendas         |                                                   |
+| - Clientes       | +----------------------------------------------+ |
+| - Relatórios     | | TABELA DE DADOS                               | |
+| - Config         | | Col1 | Col2 | Col3 | Col4 | Col5              | |
+|                  | |------|------|------|------|------|             | |
+|                  | | Dado1| Dado2| Dado3| Dado4| Dado5|             | |
+|                  | | Dado1| Dado2| Dado3| Dado4| Dado5|             | |
+|                  | +----------------------------------------------+ |
+|                  |                                                   |
+|                  | +----------+  +----------+                       |
+|                  | | CALENDÁRIO|  | NOTIFICAÇÕES|                   |
+|                  | +----------+  +----------+                       |
++------------------+---------------------------------------------------+
+            </pre
+        >
+      </div>
+
+      <!-- DASHBOARD PRINCIPAL -->
+      <div class="dashboard-container">
+        <!-- MENU LATERAL -->
+        <aside class="sidebar">
+          <div class="sidebar-logo">📊 AdminDash</div>
+          <nav class="sidebar-menu">
+            <div
+              class="menu-item active"
+              onclick="alert('Home - Dashboard principal')"
+            >
+              <i>🏠</i> <span>Home</span>
+            </div>
+            <div
+              class="menu-item"
+              onclick="alert('Vendas - Relatório de vendas')"
+            >
+              <i>📈</i> <span>Vendas</span>
+            </div>
+            <div
+              class="menu-item"
+              onclick="alert('Clientes - Gerenciar clientes')"
+            >
+              <i>👥</i> <span>Clientes</span>
+            </div>
+            <div
+              class="menu-item"
+              onclick="alert('Relatórios - Gerar relatórios')"
+            >
+              <i>📄</i> <span>Relatórios</span>
+            </div>
+            <div
+              class="menu-item"
+              onclick="alert('Configurações - Ajustes do sistema')"
+            >
+              <i>⚙️</i> <span>Config</span>
+            </div>
+          </nav>
+          <div
+            style="
+              padding: 20px 15px;
+              color: #334155;
+              font-size: 12px;
+              border-top: 1px solid #1e293b;
+            "
+          >
+            v2.4.0 • Online
+          </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+          <div class="content-header">
+            <h1>Dashboard Overview</h1>
+            <div class="date-badge">📅 24 Fev 2026 • 14:32</div>
+          </div>
+
+          <!-- LINHA 1: GRÁFICO + MÉTRICAS KPI -->
+          <div class="metrics-row">
+            <!-- GRÁFICO -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <span>📊 Receita Mensal</span>
+                <span style="color: #38bdf8">+23% vs mês anterior</span>
+              </div>
+              <div class="chart-placeholder">
+                <span>📈 GRÁFICO DE VENDAS</span>
+              </div>
+            </div>
+
+            <!-- MÉTRICAS KPI -->
+            <div class="kpi-card">
+              <div class="kpi-item" onclick="alert('Métrica de Receita Total')">
+                <div class="kpi-label">Receita Total</div>
+                <div class="kpi-value">
+                  R$ 187.450
+                  <span class="kpi-change">+12,5%</span>
+                </div>
+              </div>
+              <div class="kpi-item" onclick="alert('Métrica de Vendas')">
+                <div class="kpi-label">Vendas</div>
+                <div class="kpi-value">
+                  1.284
+                  <span class="kpi-change">+8,3%</span>
+                </div>
+              </div>
+              <div class="kpi-item" onclick="alert('Métrica de Visitantes')">
+                <div class="kpi-label">Visitantes</div>
+                <div class="kpi-value">
+                  8.492
+                  <span class="kpi-change">+21,2%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABELA DE DADOS -->
+          <div class="table-section">
+            <div class="table-header">
+              <span>📋 Últimas Transações</span>
+              <span
+                style="color: #38bdf8; cursor: pointer"
+                onclick="alert('Exportar dados')"
+                >Exportar ↓</span
+              >
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Produto</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr onclick="alert('Detalhes da transação #2456')">
+                    <td>#2456</td>
+                    <td>João Silva</td>
+                    <td>Notebook Pro</td>
+                    <td>R$ 4.299</td>
+                    <td><span class="status-badge success">Pago</span></td>
+                    <td>24/02</td>
+                  </tr>
+                  <tr onclick="alert('Detalhes da transação #2455')">
+                    <td>#2455</td>
+                    <td>Maria Oliveira</td>
+                    <td>Smartphone X</td>
+                    <td>R$ 2.499</td>
+                    <td><span class="status-badge success">Pago</span></td>
+                    <td>24/02</td>
+                  </tr>
+                  <tr onclick="alert('Detalhes da transação #2454')">
+                    <td>#2454</td>
+                    <td>Carlos Santos</td>
+                    <td>Fone Bluetooth</td>
+                    <td>R$ 349</td>
+                    <td><span class="status-badge warning">Pendente</span></td>
+                    <td>23/02</td>
+                  </tr>
+                  <tr onclick="alert('Detalhes da transação #2453')">
+                    <td>#2453</td>
+                    <td>Ana Costa</td>
+                    <td>Smartwatch</td>
+                    <td>R$ 899</td>
+                    <td><span class="status-badge success">Pago</span></td>
+                    <td>23/02</td>
+                  </tr>
+                  <tr onclick="alert('Detalhes da transação #2452')">
+                    <td>#2452</td>
+                    <td>Pedro Souza</td>
+                    <td>Tablet</td>
+                    <td>R$ 1.599</td>
+                    <td><span class="status-badge">Processando</span></td>
+                    <td>23/02</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- LINHA 2: CALENDÁRIO + NOTIFICAÇÕES -->
+          <div class="bottom-row">
+            <!-- CALENDÁRIO -->
+            <div class="calendar-card">
+              <div class="calendar-header">
+                <span>📅 Fevereiro 2026</span>
+                <span
+                  style="color: #38bdf8; cursor: pointer"
+                  onclick="alert('Mês anterior')"
+                  >◀</span
+                >
+              </div>
+              <div class="calendar-weekdays">
+                <span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span
+                ><span>QUI</span><span>SEX</span><span>SÁB</span>
+              </div>
+              <div class="calendar-days">
+                <!-- Dias do mês anterior (Janeiro) -->
+                <span class="calendar-day other-month">26</span>
+                <span class="calendar-day other-month">27</span>
+                <span class="calendar-day other-month">28</span>
+                <span class="calendar-day other-month">29</span>
+                <span class="calendar-day other-month">30</span>
+                <span class="calendar-day other-month">31</span>
+                <span class="calendar-day">1</span>
+                <!-- Fevereiro -->
+                <span class="calendar-day">2</span>
+                <span class="calendar-day">3</span>
+                <span class="calendar-day">4</span>
+                <span class="calendar-day">5</span>
+                <span class="calendar-day">6</span>
+                <span class="calendar-day">7</span>
+                <span class="calendar-day">8</span>
+                <span class="calendar-day">9</span>
+                <span class="calendar-day">10</span>
+                <span class="calendar-day">11</span>
+                <span class="calendar-day">12</span>
+                <span class="calendar-day">13</span>
+                <span class="calendar-day">14</span>
+                <span class="calendar-day">15</span>
+                <span class="calendar-day">16</span>
+                <span class="calendar-day">17</span>
+                <span class="calendar-day">18</span>
+                <span class="calendar-day">19</span>
+                <span class="calendar-day">20</span>
+                <span class="calendar-day">21</span>
+                <span class="calendar-day">22</span>
+                <span class="calendar-day">23</span>
+                <span class="calendar-day today">24</span>
+                <span class="calendar-day">25</span>
+                <span class="calendar-day">26</span>
+                <span class="calendar-day">27</span>
+                <span class="calendar-day">28</span>
+                <span class="calendar-day other-month">1</span>
+                <span class="calendar-day other-month">2</span>
+                <span class="calendar-day other-month">3</span>
+              </div>
+            </div>
+
+            <!-- NOTIFICAÇÕES -->
+            <div class="notifications-card">
+              <div class="notifications-header">
+                <span>🔔 Notificações</span>
+                <span
+                  style="color: #38bdf8; cursor: pointer"
+                  onclick="alert('Marcar todas como lidas')"
+                  >✓ 3 novas</span
+                >
+              </div>
+
+              <div
+                class="notification-item"
+                onclick="alert('Notificação: Nova venda realizada')"
+              >
+                <div class="notification-icon">💰</div>
+                <div class="notification-content">
+                  <div class="notification-title">Nova venda: R$ 4.299</div>
+                  <div class="notification-time">Há 5 minutos</div>
+                </div>
+              </div>
+
+              <div
+                class="notification-item"
+                onclick="alert('Notificação: Cliente novo cadastrado')"
+              >
+                <div class="notification-icon">👤</div>
+                <div class="notification-content">
+                  <div class="notification-title">
+                    Novo cliente: 15 cadastros
+                  </div>
+                  <div class="notification-time">Há 23 minutos</div>
+                </div>
+              </div>
+
+              <div
+                class="notification-item"
+                onclick="alert('Notificação: Relatório pronto')"
+              >
+                <div class="notification-icon">📊</div>
+                <div class="notification-content">
+                  <div class="notification-title">
+                    Relatório mensal disponível
+                  </div>
+                  <div class="notification-time">Há 1 hora</div>
+                </div>
+              </div>
+
+              <div
+                class="notification-item"
+                onclick="alert('Notificação: Estoque baixo')"
+              >
+                <div class="notification-icon">⚠️</div>
+                <div class="notification-content">
+                  <div class="notification-title">
+                    5 produtos com estoque baixo
+                  </div>
+                  <div class="notification-time">Há 3 horas</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- RODAPÉ DO DASHBOARD -->
+      <footer class="dashboard-footer">
+        <div>© 2026 AdminDash • Sistema de gestão</div>
+        <div class="footer-links">
+          <span onclick="alert('Configurações do sistema')"
+            >⚙️ Configurações</span
+          >
+          <span onclick="alert('Ajuda e suporte')">❓ Ajuda</span>
+          <span onclick="alert('Perfil do usuário')">👤 Admin</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
