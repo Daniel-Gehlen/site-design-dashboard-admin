@@ -1,11 +1,3 @@
-## 📄 About (English)
-**Admin Dashboard Interface** - A comprehensive data management prototype built with HTML5 and CSS3. Features collapsible sidebar navigation, KPI metric cards, interactive data table with status badges, sales chart placeholder, calendar component, and real-time notifications panel. Implements dark theme, CSS Grid for layouts, hover effects, and responsive design for desktop/tablet. Perfect for internal systems, analytics platforms, and backoffice applications.
-
----
-
-### 📚 README.md
-
-
 # 📊 AdminDash - Design Dashboard / Admin
 
 ![Versão](https://img.shields.io/badge/versão-1.0.0-blue)
